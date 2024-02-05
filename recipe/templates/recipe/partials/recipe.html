@@ -83,12 +83,14 @@
 
                 <!-- sem botão para aparecer descrições da receita -->
                 
-                {% if is_detail_page %}
-                    
+                {% if is_detail_page is True %}
                     <div class="preparation-steps">
-                        {{ recipe.preparation_steps|linebreaksbr }}
+                        {% if recipe.preparation_steps_is_html is True %}
+                            {{ preparation_steps_is_html|safe }}
+                        {% else %}
+                            {{ recipe.preparation_steps|linebreaksbr }}
+                        {% endif %}
                     </div>
-
                 {% endif %}
                     
 </div>

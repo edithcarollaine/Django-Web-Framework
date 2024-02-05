@@ -19,7 +19,11 @@ def category(request, category_id):
                             'title': f'{recipes[0].category.name} - Category |'})
 
 def recipe(request, id):
+    recipe = Recipe.objects.filter(id=id, 
+                                    is_published=True).order_by('-id').first()
+    
+    
     return render(request, 'recipe/pages/recipe-view.html',
-                  context={'recipe': make_recipe(),
+                  context={'recipe': recipe,
                            'is_detail_page': True,
                            })
