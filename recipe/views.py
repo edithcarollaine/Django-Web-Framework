@@ -1,12 +1,24 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse, Http404
+from django.shortcuts import get_list_or_404, render
 from utils.recipes.factory import make_recipe
-
+from .models import Recipe
 
 # Create your views here.
 
 def home(request):
-    return render(request, 'recipe/pages/home.html', context={'recipes': [make_recipe() for _ in range(10)]})
+    recipes = Recipe.objects.filter(is_published=True).order_by('-id')
+    return render(request, 'recipe/pages/home.html', context={'recipes': recipes})
+
+def category(request, category_id):
+    recipes = Recipe.objects.filter(category__id=category_id, is_published=True).order_by('id')
+    
+    if not recipes:
+        raise Http404('Not found, sorry. Keep trying!')
+    
+
+    return render(request, 'recipe/pages/category.html',
+                  context={'recipes': recipes, 
+                            'title': f'{recipes[0].category.name} - Category |'})
 
 def recipe(request, id):
     return render(request, 'recipe/pages/recipe-view.html',
